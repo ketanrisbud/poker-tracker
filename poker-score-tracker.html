@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Poker Score Tracker</title>
+  <link rel="preconnect" href="https://api.fontshare.com">
+  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
+  <style>
+    :root, [data-theme="light"] {
+      --text-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+      --text-sm: clamp(0.875rem, 0.8rem + 0.35vw, 1rem);
+      --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+      --text-lg: clamp(1.125rem, 1rem + 0.75vw, 1.5rem);
+      --text-xl: clamp(1.5rem, 1.2rem + 1.25vw, 2.25rem);
+      --space-1: 0.25rem; --space-2: 0.5rem; --space-3: 0.75rem; --space-4: 1rem; --space-5: 1.25rem; --space-6: 1.5rem; --space-8: 2rem; --space-10: 2.5rem; --space-12: 3rem;
+      --color-bg: #f7f6f2;
+      --color-surface: #f9f8f5;
+      --color-surface-2: #fbfbf9;
+      --color-surface-offset: #edeae5;
+      --color-border: #d4d1ca;
+      --color-divider: #dcd9d5;
+      --color-text: #28251d;
+      --color-text-muted: #7a7974;
+      --color-text-faint: #bab9b4;
+      --color-text-inverse: #f9f8f4;
+      --color-primary: #01696f;
+      --color-primary-hover: #0c4e54;
+      --color-primary-highlight: #cedcd8;
+      --color-success: #437a22;
+      --color-success-highlight: #d4dfcc;
+      --color-error: #a12c7b;
+      --color-error-highlight: #e0ced7;
+      --radius-sm: 0.375rem;
+      --radius-md: 0.5rem;
+      --radius-lg: 0.75rem;
+      --radius-xl: 1rem;
+      --radius-full: 9999px;
+      --shadow-sm: 0 1px 2px rgba(40, 37, 29, 0.06);
+      --shadow-md: 0 8px 24px rgba(40, 37, 29, 0.1);
+      --transition-interactive: 180ms cubic-bezier(0.16, 1, 0.3, 1);
+      --font-body: 'Satoshi', 'Inter', sans-serif;
+      --font-display: 'Satoshi', 'Inter', sans-serif;
+    }
+
+    [data-theme="dark"] {
+      --color-bg: #171614;
+      --color-surface: #1c1b19;
+      --color-surface-2: #201f1d;
+      --color-surface-offset: #22211f;
+      --color-border: #393836;
+      --color-divider: #262523;
+      --color-text: #cdccca;
+      --color-text-muted: #979692;
+      --color-text-faint: #6f6e6a;
+      --color-text-inverse: #171614;
+      --color-primary: #4f98a3;
+      --color-primary-hover: #227f8b;
+      --color-primary-highlight: #313b3b;
+      --color-success: #6daa45;
+      --color-success-highlight: #3a4435;
+      --color-error: #d163a7;
+      --color-error-highlight: #4c3d46;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.2);
+      --shadow-md: 0 12px 32px rgba(0,0,0,0.35);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      min-height: 100dvh;
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      line-height: 1.6;
+      color: var(--color-text);
+      background:
+        radial-gradient(circle at top right, color-mix(in srgb, var(--color-primary) 10%, transparent), transparent 28%),
+        var(--color-bg);
+      padding: var(--space-4);
+    }
+
+    button, input { font: inherit; }
+    button {
+      border: none;
+      cursor: pointer;
+      transition: transform var(--transition-interactive), background var(--transition-interactive), color var(--transition-interactive), border-color var(--transition-interactive);
+    }
+    button:hover { transform: translateY(-1px); }
+    button:active { transform: translateY(0); }
+    input {
+      width: 100%;
+      padding: var(--space-3) var(--space-4);
+      border: 1px solid color-mix(in srgb, var(--color-text) 12%, transparent);
+      border-radius: var(--radius-md);
+      background: var(--color-surface-2);
+      color: var(--color-text);
+    }
+    input:focus-visible, button:focus-visible {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 2px;
+    }
+
+    .shell {
+      max-width: 1180px;
+      margin: 0 auto;
+      display: grid;
+      gap: var(--space-6);
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-4);
+      padding: var(--space-4) 0;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    .logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--color-primary), color-mix(in srgb, var(--color-primary) 55%, white));
+      display: grid;
+      place-items: center;
+      color: white;
+      box-shadow: var(--shadow-sm);
+      flex: 0 0 auto;
+    }
+
+    .brand h1 {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+    }
+
+    .brand p {
+      color: var(--color-text-muted);
+      font-size: var(--text-sm);
+    }
+
+    .theme-toggle {
+      min-width: 44px;
+      min-height: 44px;
+      border-radius: var(--radius-full);
+      padding: 0 var(--space-4);
+      background: var(--color-surface);
+      border: 1px solid color-mix(in srgb, var(--color-text) 10%, transparent);
+      color: var(--color-text);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .layout {
+      display: grid;
+      gap: var(--space-6);
+      grid-template-columns: 1.2fr 0.8fr;
+      align-items: start;
+    }
+
+    .panel {
+      background: color-mix(in srgb, var(--color-surface) 88%, transparent);
+      border: 1px solid color-mix(in srgb, var(--color-text) 10%, transparent);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-md);
+      backdrop-filter: blur(10px);
+    }
+
+    .panel-inner { padding: var(--space-6); }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: var(--space-4);
+      margin-bottom: var(--space-5);
+      flex-wrap: wrap;
+    }
+
+    .section-head h2 {
+      font-size: var(--text-lg);
+      line-height: 1.2;
+    }
+
+    .section-head p, .helper, .empty-note, .summary-note {
+      color: var(--color-text-muted);
+      font-size: var(--text-sm);
+    }
+
+    .toolbar {
+      display: flex;
+      gap: var(--space-3);
+      flex-wrap: wrap;
+      margin-bottom: var(--space-5);
+    }
+
+    .btn {
+      min-height: 44px;
+      padding: var(--space-3) var(--space-4);
+      border-radius: var(--radius-md);
+      font-size: var(--text-sm);
+      font-weight: 600;
+    }
+
+    .btn-primary {
+      background: var(--color-primary);
+      color: var(--color-text-inverse);
+    }
+
+    .btn-primary:hover { background: var(--color-primary-hover); }
+
+    .btn-secondary {
+      background: var(--color-surface-2);
+      color: var(--color-text);
+      border: 1px solid color-mix(in srgb, var(--color-text) 12%, transparent);
+    }
+
+    .btn-danger {
+      background: color-mix(in srgb, var(--color-error) 14%, var(--color-surface));
+      color: var(--color-error);
+      border: 1px solid color-mix(in srgb, var(--color-error) 30%, transparent);
+    }
+
+    .add-form {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: var(--space-3);
+      margin-bottom: var(--space-5);
+    }
+
+    .player-list {
+      display: grid;
+      gap: var(--space-4);
+    }
+
+    .player-card {
+      background: var(--color-surface-2);
+      border: 1px solid color-mix(in srgb, var(--color-text) 9%, transparent);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      display: grid;
+      gap: var(--space-4);
+    }
+
+    .player-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      gap: var(--space-4);
+      flex-wrap: wrap;
+    }
+
+    .player-name-wrap h3 {
+      font-size: var(--text-lg);
+      line-height: 1.15;
+    }
+
+    .pill-row {
+      display: flex;
+      gap: var(--space-2);
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 32px;
+      padding: 0 var(--space-3);
+      border-radius: var(--radius-full);
+      background: var(--color-surface-offset);
+      color: var(--color-text-muted);
+      font-size: var(--text-xs);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .pill.money {
+      background: var(--color-primary-highlight);
+      color: var(--color-primary);
+    }
+
+    .rebuy-controls {
+      display: flex;
+      gap: var(--space-3);
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .rebuy-count {
+      min-width: 44px;
+      min-height: 44px;
+      display: grid;
+      place-items: center;
+      border-radius: var(--radius-md);
+      background: var(--color-surface-offset);
+      font-weight: 700;
+    }
+
+    .status-grid {
+      display: grid;
+      gap: var(--space-4);
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      margin-bottom: var(--space-6);
+    }
+
+    .stat {
+      background: var(--color-surface-2);
+      border: 1px solid color-mix(in srgb, var(--color-text) 8%, transparent);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+    }
+
+    .stat-label {
+      color: var(--color-text-muted);
+      font-size: var(--text-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: var(--space-2);
+    }
+
+    .stat strong {
+      display: block;
+      font-size: var(--text-lg);
+      line-height: 1.15;
+    }
+
+    .remaining-grid {
+      display: grid;
+      gap: var(--space-4);
+      margin-top: var(--space-4);
+    }
+
+    .remaining-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 140px;
+      gap: var(--space-3);
+      align-items: center;
+    }
+
+    .remaining-row label {
+      font-weight: 600;
+    }
+
+    .settlements {
+      display: grid;
+      gap: var(--space-3);
+      margin-top: var(--space-4);
+    }
+
+    .settlement-item {
+      padding: var(--space-4);
+      border-radius: var(--radius-lg);
+      background: color-mix(in srgb, var(--color-success) 10%, var(--color-surface));
+      border: 1px solid color-mix(in srgb, var(--color-success) 22%, transparent);
+    }
+
+    .settlement-item strong { color: var(--color-success); }
+
+    .message {
+      padding: var(--space-4);
+      border-radius: var(--radius-lg);
+      background: color-mix(in srgb, var(--color-primary) 8%, var(--color-surface));
+      border: 1px solid color-mix(in srgb, var(--color-primary) 18%, transparent);
+      color: var(--color-text);
+    }
+
+    .message.error {
+      background: color-mix(in srgb, var(--color-error) 10%, var(--color-surface));
+      border-color: color-mix(in srgb, var(--color-error) 24%, transparent);
+      color: var(--color-error);
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--color-divider);
+      margin: var(--space-5) 0;
+    }
+
+    .endgame-banner {
+      display: none;
+      padding: var(--space-4);
+      border-radius: var(--radius-lg);
+      background: color-mix(in srgb, var(--color-primary) 10%, var(--color-surface));
+      border: 1px solid color-mix(in srgb, var(--color-primary) 20%, transparent);
+      margin-bottom: var(--space-4);
+    }
+
+    .endgame-banner.active { display: block; }
+
+    .footer-note {
+      color: var(--color-text-muted);
+      font-size: var(--text-sm);
+      text-align: center;
+      padding-bottom: var(--space-4);
+    }
+
+    .hidden { display: none !important; }
+
+    @media (max-width: 920px) {
+      .layout { grid-template-columns: 1fr; }
+      .status-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      body { padding: var(--space-3); }
+      .panel-inner { padding: var(--space-4); }
+      .add-form, .remaining-row { grid-template-columns: 1fr; }
+      .brand h1 { font-size: 1.8rem; }
+    }
+  </style>
+</head>
+<body>
+  <a href="#main" style="position:absolute;left:-9999px;top:auto;">Skip to content</a>
+  <div class="shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Poker tracker logo">
+            <rect x="3" y="5" width="14" height="16" rx="3" stroke="currentColor" stroke-width="2.2"/>
+            <rect x="9" y="3" width="14" height="16" rx="3" stroke="currentColor" stroke-width="2.2" opacity="0.85"/>
+            <path d="M16 8.5L17.5 11L20.5 11.4L18.4 13.4L19 16.4L16 14.9L13 16.4L13.6 13.4L11.5 11.4L14.5 11L16 8.5Z" fill="currentColor"/>
+          </svg>
+        </div>
+        <div>
+          <h1>Poker Score Tracker</h1>
+          <p>$10 buy-in, $10 rebuys, and one-click settlement.</p>
+        </div>
+      </div>
+      <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch theme">🌙</button>
+    </header>
+
+    <main id="main" class="layout">
+      <section class="panel">
+        <div class="panel-inner">
+          <div class="section-head">
+            <div>
+              <h2>Players</h2>
+              <p>Add everyone in the game, then tap rebuy whenever someone buys back in.</p>
+            </div>
+          </div>
+
+          <form class="add-form" id="addPlayerForm">
+            <input id="playerName" name="playerName" type="text" maxlength="30" placeholder="Enter player name" aria-label="Player name" required>
+            <button class="btn btn-primary" type="submit">Add player</button>
+          </form>
+
+          <div class="toolbar">
+            <button class="btn btn-secondary" type="button" id="samplePlayersBtn">Add sample table</button>
+            <button class="btn btn-danger" type="button" id="resetBtn">Reset game</button>
+          </div>
+
+          <div id="playerList" class="player-list"></div>
+          <p id="emptyNote" class="empty-note">No players yet. Start by adding everyone seated at the table.</p>
+        </div>
+      </section>
+
+      <aside class="panel">
+        <div class="panel-inner">
+          <div class="section-head">
+            <div>
+              <h2>Game status</h2>
+              <p>End the game to enter remaining stacks, then settle up.</p>
+            </div>
+          </div>
+
+          <div class="status-grid">
+            <div class="stat">
+              <div class="stat-label">Players</div>
+              <strong id="statPlayers">0</strong>
+            </div>
+            <div class="stat">
+              <div class="stat-label">Total bought in</div>
+              <strong id="statBoughtIn">$0</strong>
+            </div>
+            <div class="stat">
+              <div class="stat-label">Total rebuys</div>
+              <strong id="statRebuys">0</strong>
+            </div>
+          </div>
+
+          <div class="endgame-banner" id="endGameBanner">
+            Game ended. Enter each player’s remaining cash or chip value below, then press settle.
+          </div>
+
+          <div class="toolbar">
+            <button class="btn btn-primary" type="button" id="endGameBtn">End game</button>
+            <button class="btn btn-secondary hidden" type="button" id="settleBtn">Settle</button>
+          </div>
+
+          <div id="messageBox" class="message">A balanced game should have total remaining money equal total buy-ins.</div>
+
+          <div id="remainingSection" class="hidden">
+            <div class="divider"></div>
+            <div class="section-head">
+              <div>
+                <h2>Remaining money</h2>
+                <p>Enter what each player has left when the game ends.</p>
+              </div>
+            </div>
+            <div id="remainingGrid" class="remaining-grid"></div>
+            <p class="summary-note" id="remainingSummary"></p>
+          </div>
+
+          <div id="settlementSection" class="hidden">
+            <div class="divider"></div>
+            <div class="section-head">
+              <div>
+                <h2>Settlement</h2>
+                <p>These payouts clear the game with the fewest transfers possible.</p>
+              </div>
+            </div>
+            <div id="settlements" class="settlements"></div>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <p class="footer-note">Tip: each player starts with $10, and every rebuy adds another $10 to that player’s buy-in total.</p>
+  </div>
+
+  <script>
+    const state = {
+      players: [],
+      ended: false,
+      nextId: 1
+    };
+
+    const playerList = document.getElementById('playerList');
+    const emptyNote = document.getElementById('emptyNote');
+    const statPlayers = document.getElementById('statPlayers');
+    const statBoughtIn = document.getElementById('statBoughtIn');
+    const statRebuys = document.getElementById('statRebuys');
+    const addPlayerForm = document.getElementById('addPlayerForm');
+    const playerNameInput = document.getElementById('playerName');
+    const endGameBtn = document.getElementById('endGameBtn');
+    const settleBtn = document.getElementById('settleBtn');
+    const remainingSection = document.getElementById('remainingSection');
+    const remainingGrid = document.getElementById('remainingGrid');
+    const settlementSection = document.getElementById('settlementSection');
+    const settlementsEl = document.getElementById('settlements');
+    const messageBox = document.getElementById('messageBox');
+    const remainingSummary = document.getElementById('remainingSummary');
+    const endGameBanner = document.getElementById('endGameBanner');
+
+    function money(value) {
+      return `$${Number(value).toFixed(2).replace('.00', '')}`;
+    }
+
+    function totalBoughtIn(player) {
+      return 10 + player.rebuys * 10;
+    }
+
+    function addPlayer(name) {
+      state.players.push({ id: state.nextId++, name, rebuys: 0, remaining: '' });
+      render();
+    }
+
+    function removePlayer(id) {
+      state.players = state.players.filter(player => player.id !== id);
+      render();
+    }
+
+    function adjustRebuy(id, delta) {
+      const player = state.players.find(p => p.id === id);
+      if (!player) return;
+      player.rebuys = Math.max(0, player.rebuys + delta);
+      render();
+    }
+
+    function updateRemaining(id, value) {
+      const player = state.players.find(p => p.id === id);
+      if (!player) return;
+      player.remaining = value;
+      updateRemainingSummary();
+    }
+
+    function updateRemainingSummary() {
+      if (!state.ended) return;
+      const entered = state.players.reduce((sum, player) => sum + (Number(player.remaining) || 0), 0);
+      const total = state.players.reduce((sum, player) => sum + totalBoughtIn(player), 0);
+      const diff = Number((entered - total).toFixed(2));
+      if (Math.abs(diff) < 0.009) {
+        remainingSummary.textContent = `Entered total matches buy-ins: ${money(entered)}.`;
+      } else if (diff > 0) {
+        remainingSummary.textContent = `Entered total is ${money(diff)} too high. Check the ending amounts.`;
+      } else {
+        remainingSummary.textContent = `Entered total is ${money(Math.abs(diff))} too low. Check the ending amounts.`;
+      }
+    }
+
+    function endGame() {
+      if (!state.players.length) {
+        showMessage('Add at least one player before ending the game.', true);
+        return;
+      }
+      state.ended = true;
+      endGameBanner.classList.add('active');
+      remainingSection.classList.remove('hidden');
+      settleBtn.classList.remove('hidden');
+      renderRemainingInputs();
+      updateRemainingSummary();
+      showMessage('Enter what each player has left, then press settle.', false);
+    }
+
+    function settleGame() {
+      if (!state.players.length) {
+        showMessage('Add players first.', true);
+        return;
+      }
+
+      const results = state.players.map(player => {
+        const remaining = Number(player.remaining);
+        return {
+          ...player,
+          buyIn: totalBoughtIn(player),
+          remaining,
+          net: Number((remaining - totalBoughtIn(player)).toFixed(2))
+        };
+      });
+
+      if (results.some(player => Number.isNaN(player.remaining))) {
+        showMessage('Enter a remaining amount for every player.', true);
+        settlementSection.classList.add('hidden');
+        return;
+      }
+
+      const totalRemaining = Number(results.reduce((sum, player) => sum + player.remaining, 0).toFixed(2));
+      const totalBuyIns = Number(results.reduce((sum, player) => sum + player.buyIn, 0).toFixed(2));
+
+      if (Math.abs(totalRemaining - totalBuyIns) > 0.009) {
+        showMessage(`Totals do not balance. Remaining money is ${money(totalRemaining)} but buy-ins total ${money(totalBuyIns)}.`, true);
+        settlementSection.classList.add('hidden');
+        return;
+      }
+
+      const debtors = results.filter(p => p.net < 0).map(p => ({ ...p, amount: Math.abs(p.net) }));
+      const creditors = results.filter(p => p.net > 0).map(p => ({ ...p, amount: p.net }));
+      const transfers = [];
+
+      let i = 0;
+      let j = 0;
+      while (i < debtors.length && j < creditors.length) {
+        const payAmount = Number(Math.min(debtors[i].amount, creditors[j].amount).toFixed(2));
+        if (payAmount > 0) {
+          transfers.push({ from: debtors[i].name, to: creditors[j].name, amount: payAmount });
+        }
+        debtors[i].amount = Number((debtors[i].amount - payAmount).toFixed(2));
+        creditors[j].amount = Number((creditors[j].amount - payAmount).toFixed(2));
+        if (debtors[i].amount < 0.01) i++;
+        if (creditors[j].amount < 0.01) j++;
+      }
+
+      renderSettlements(results, transfers);
+      showMessage('Settlement calculated successfully.', false);
+    }
+
+    function renderSettlements(results, transfers) {
+      settlementSection.classList.remove('hidden');
+      settlementsEl.innerHTML = '';
+
+      const standings = document.createElement('div');
+      standings.className = 'message';
+      standings.innerHTML = results.map(player => {
+        const tone = player.net > 0 ? 'won' : player.net < 0 ? 'lost' : 'broke even';
+        const amount = player.net === 0 ? '' : ` ${money(Math.abs(player.net))}`;
+        return `<div><strong>${player.name}</strong> ${tone}${amount ? ' ' + amount : ''}.</div>`;
+      }).join('');
+      settlementsEl.appendChild(standings);
+
+      if (!transfers.length) {
+        const even = document.createElement('div');
+        even.className = 'settlement-item';
+        even.textContent = 'Nobody owes anyone. Everyone broke even.';
+        settlementsEl.appendChild(even);
+        return;
+      }
+
+      transfers.forEach(transfer => {
+        const item = document.createElement('div');
+        item.className = 'settlement-item';
+        item.innerHTML = `<strong>${transfer.from}</strong> pays <strong>${transfer.to}</strong> ${money(transfer.amount)}.`;
+        settlementsEl.appendChild(item);
+      });
+    }
+
+    function showMessage(text, isError) {
+      messageBox.textContent = text;
+      messageBox.classList.toggle('error', Boolean(isError));
+    }
+
+    function renderRemainingInputs() {
+      remainingGrid.innerHTML = '';
+      state.players.forEach(player => {
+        const row = document.createElement('div');
+        row.className = 'remaining-row';
+        row.innerHTML = `
+          <label for="remaining-${player.id}">${player.name} <span class="helper">(${money(totalBoughtIn(player))} bought in)</span></label>
+          <input id="remaining-${player.id}" type="number" min="0" step="10" inputmode="decimal" placeholder="0" value="${player.remaining}">
+        `;
+        row.querySelector('input').addEventListener('input', event => updateRemaining(player.id, event.target.value));
+        remainingGrid.appendChild(row);
+      });
+    }
+
+    function render() {
+      playerList.innerHTML = '';
+      emptyNote.style.display = state.players.length ? 'none' : 'block';
+      const totalPlayers = state.players.length;
+      const totalRebuys = state.players.reduce((sum, player) => sum + player.rebuys, 0);
+      const boughtIn = state.players.reduce((sum, player) => sum + totalBoughtIn(player), 0);
+
+      statPlayers.textContent = totalPlayers;
+      statRebuys.textContent = totalRebuys;
+      statBoughtIn.textContent = money(boughtIn);
+
+      state.players.forEach(player => {
+        const card = document.createElement('article');
+        card.className = 'player-card';
+        card.innerHTML = `
+          <div class="player-row">
+            <div class="player-name-wrap">
+              <h3>${player.name}</h3>
+              <div class="pill-row">
+                <span class="pill">Base buy-in $10</span>
+                <span class="pill money">Total in ${money(totalBoughtIn(player))}</span>
+              </div>
+            </div>
+            <button class="btn btn-secondary" type="button" aria-label="Remove ${player.name}">Remove</button>
+          </div>
+          <div class="rebuy-controls">
+            <button class="btn btn-secondary" type="button" aria-label="Decrease rebuy for ${player.name}">- Rebuy</button>
+            <div class="rebuy-count">${player.rebuys}</div>
+            <button class="btn btn-primary" type="button" aria-label="Increase rebuy for ${player.name}">+ Rebuy</button>
+          </div>
+        `;
+        const [removeBtn, minusBtn, plusBtn] = card.querySelectorAll('button');
+        removeBtn.addEventListener('click', () => removePlayer(player.id));
+        minusBtn.addEventListener('click', () => adjustRebuy(player.id, -1));
+        plusBtn.addEventListener('click', () => adjustRebuy(player.id, 1));
+        playerList.appendChild(card);
+      });
+
+      if (state.ended) {
+        renderRemainingInputs();
+        updateRemainingSummary();
+      }
+    }
+
+    addPlayerForm.addEventListener('submit', event => {
+      event.preventDefault();
+      const name = playerNameInput.value.trim();
+      if (!name) return;
+      const duplicate = state.players.some(player => player.name.toLowerCase() === name.toLowerCase());
+      if (duplicate) {
+        showMessage('Player names must be unique.', true);
+        return;
+      }
+      addPlayer(name);
+      playerNameInput.value = '';
+      playerNameInput.focus();
+      showMessage('Player added.', false);
+    });
+
+    document.getElementById('samplePlayersBtn').addEventListener('click', () => {
+      state.players = [
+        { id: state.nextId++, name: 'Alex', rebuys: 1, remaining: '' },
+        { id: state.nextId++, name: 'Chris', rebuys: 0, remaining: '' },
+        { id: state.nextId++, name: 'Jordan', rebuys: 2, remaining: '' },
+        { id: state.nextId++, name: 'Taylor', rebuys: 0, remaining: '' }
+      ];
+      state.ended = false;
+      remainingSection.classList.add('hidden');
+      settlementSection.classList.add('hidden');
+      settleBtn.classList.add('hidden');
+      endGameBanner.classList.remove('active');
+      showMessage('Sample table loaded.', false);
+      render();
+    });
+
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      state.players = [];
+      state.ended = false;
+      state.nextId = 1;
+      remainingSection.classList.add('hidden');
+      settlementSection.classList.add('hidden');
+      settleBtn.classList.add('hidden');
+      endGameBanner.classList.remove('active');
+      settlementsEl.innerHTML = '';
+      showMessage('Game reset. Add players to start again.', false);
+      render();
+    });
+
+    endGameBtn.addEventListener('click', endGame);
+    settleBtn.addEventListener('click', settleGame);
+
+    (function () {
+      const btn = document.querySelector('[data-theme-toggle]');
+      const root = document.documentElement;
+      let theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      root.setAttribute('data-theme', theme);
+      btn.textContent = theme === 'dark' ? '☀️' : '🌙';
+      btn.addEventListener('click', () => {
+        theme = theme === 'dark' ? 'light' : 'dark';
+        root.setAttribute('data-theme', theme);
+        btn.textContent = theme === 'dark' ? '☀️' : '🌙';
+        btn.setAttribute('aria-label', `Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`);
+      });
+    })();
+
+    render();
+  </script>
+</body>
+</html>
