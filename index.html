@@ -12,14 +12,11 @@
       --text-sm:clamp(.875rem,.8rem + .35vw,1rem);
       --text-base:clamp(1rem,.95rem + .25vw,1.125rem);
       --text-lg:clamp(1.125rem,1rem + .75vw,1.5rem);
-      --text-xl:clamp(1.5rem,1.2rem + 1.25vw,2.25rem);
       --sp1:.25rem;--sp2:.5rem;--sp3:.75rem;--sp4:1rem;--sp5:1.25rem;--sp6:1.5rem;--sp8:2rem;
       --bg:#f7f6f2;--surface:#f9f8f5;--surface2:#fbfbf9;--surfoff:#edeae5;
-      --border:#d4d1ca;--divider:#dcd9d5;
-      --text:#28251d;--muted:#7a7974;--faint:#bab9b4;--inv:#f9f8f4;
+      --divider:#dcd9d5;--text:#28251d;--muted:#7a7974;--faint:#bab9b4;--inv:#f9f8f4;
       --primary:#01696f;--primary-h:#0c4e54;--primary-hl:#cedcd8;
-      --success:#437a22;--success-hl:#d4dfcc;
-      --error:#a12c7b;--error-hl:#e0ced7;
+      --success:#437a22;--error:#a12c7b;
       --r-sm:.375rem;--r-md:.5rem;--r-lg:.75rem;--r-xl:1rem;--r-full:9999px;
       --sh-sm:0 1px 3px rgba(40,37,29,.07);--sh-md:0 6px 20px rgba(40,37,29,.09);
       --ease:180ms cubic-bezier(.16,1,.3,1);
@@ -27,133 +24,109 @@
     }
     [data-theme="dark"]{
       --bg:#171614;--surface:#1c1b19;--surface2:#201f1d;--surfoff:#272624;
-      --border:#393836;--divider:#2e2d2b;
-      --text:#cdccca;--muted:#888784;--faint:#5a5957;--inv:#171614;
+      --divider:#2e2d2b;--text:#cdccca;--muted:#888784;--faint:#5a5957;--inv:#171614;
       --primary:#4f98a3;--primary-h:#227f8b;--primary-hl:#263437;
-      --success:#6daa45;--success-hl:#2d3d28;
-      --error:#d163a7;--error-hl:#3d2d38;
+      --success:#6daa45;--error:#d163a7;
       --sh-sm:0 1px 3px rgba(0,0,0,.25);--sh-md:0 8px 24px rgba(0,0,0,.4);
     }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     html{-webkit-text-size-adjust:none;text-size-adjust:none;scroll-behavior:smooth}
-    body{
-      min-height:100dvh;font-family:var(--font);font-size:var(--text-base);
-      line-height:1.6;color:var(--text);background:var(--bg);
-      padding:var(--sp3) var(--sp3) 100px;
-    }
+    body{min-height:100dvh;font-family:var(--font);font-size:var(--text-base);line-height:1.6;color:var(--text);background:var(--bg);padding:var(--sp3) var(--sp3) 110px}
     button,input{font:inherit;color:inherit;-webkit-tap-highlight-color:transparent}
     button{border:none;cursor:pointer;transition:background var(--ease),color var(--ease),transform var(--ease),opacity var(--ease)}
-    button:active{opacity:.78;transform:scale(.97)}
-    @media(hover:hover){button:hover{filter:brightness(1.06)}}
+    button:active{opacity:.75;transform:scale(.96)}
+    @media(hover:hover){button:hover{filter:brightness(1.07)}}
 
-    /* ── Layout ── */
     .shell{max-width:600px;margin:0 auto;display:grid;gap:var(--sp4)}
 
-    /* ── Header ── */
+    /* Header */
     .topbar{display:flex;justify-content:space-between;align-items:center;gap:var(--sp3);padding:var(--sp2) 0 var(--sp3)}
     .brand{display:flex;align-items:center;gap:var(--sp3)}
     .logo{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,var(--primary),color-mix(in srgb,var(--primary) 55%,#fff));display:grid;place-items:center;color:#fff;box-shadow:var(--sh-sm);flex:0 0 auto}
     .brand-text h1{font-size:clamp(1.2rem,4vw,1.6rem);line-height:1.1;letter-spacing:-.03em;font-weight:700}
     .brand-text p{color:var(--muted);font-size:var(--text-xs)}
     .hd-right{display:flex;align-items:center;gap:var(--sp2)}
-    .save-dot{width:8px;height:8px;border-radius:50%;background:var(--success);opacity:0;transition:opacity .4s}
+    .save-dot{width:8px;height:8px;border-radius:50%;background:var(--success);opacity:0;transition:opacity .4s;flex-shrink:0}
     .save-dot.on{opacity:1}
     .theme-btn{min-width:42px;min-height:42px;border-radius:var(--r-full);background:var(--surface);border:1px solid color-mix(in srgb,var(--text) 10%,transparent);font-size:1.1rem;display:grid;place-items:center}
 
-    /* ── Scoreboard pill strip (always visible) ── */
-    .scoreboard{
-      background:var(--surface);border:1px solid color-mix(in srgb,var(--text) 9%,transparent);
-      border-radius:var(--r-xl);box-shadow:var(--sh-sm);overflow:hidden;
-    }
-    .scoreboard-title{
-      padding:var(--sp3) var(--sp4) var(--sp2);
-      font-size:var(--text-xs);font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);
-    }
-    .score-row{
-      display:flex;align-items:center;justify-content:space-between;
-      padding:var(--sp3) var(--sp4);gap:var(--sp3);
-      border-top:1px solid var(--divider);
-    }
+    /* Scoreboard */
+    .scoreboard{background:var(--surface);border:1px solid color-mix(in srgb,var(--text) 9%,transparent);border-radius:var(--r-xl);box-shadow:var(--sh-sm);overflow:hidden}
+    .scoreboard-title{padding:var(--sp3) var(--sp4) var(--sp2);font-size:var(--text-xs);font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--muted)}
+    .score-row{display:flex;align-items:center;justify-content:space-between;padding:var(--sp3) var(--sp4);gap:var(--sp3);border-top:1px solid var(--divider)}
     .score-row:first-of-type{border-top:none}
     .score-name{font-weight:600;font-size:var(--text-base);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .score-chips{display:flex;align-items:center;gap:var(--sp2);flex-shrink:0}
-    .chip{
-      display:inline-flex;align-items:center;justify-content:center;
-      min-width:34px;height:28px;padding:0 var(--sp2);
-      border-radius:var(--r-full);font-size:var(--text-xs);font-weight:700;
-    }
+    .chip{display:inline-flex;align-items:center;justify-content:center;min-width:34px;height:28px;padding:0 var(--sp2);border-radius:var(--r-full);font-size:var(--text-xs);font-weight:700}
     .chip-base{background:var(--surfoff);color:var(--muted)}
     .chip-rebuy{background:color-mix(in srgb,var(--primary) 14%,var(--surface));color:var(--primary)}
     .chip-total{background:var(--primary);color:#fff;font-size:var(--text-sm);min-width:52px;height:32px}
     .scoreboard-empty{padding:var(--sp5) var(--sp4);color:var(--muted);font-size:var(--text-sm);text-align:center}
 
-    /* ── Stats bar ── */
+    /* Stats */
     .stats-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp2)}
-    .stat{background:var(--surface);border:1px solid color-mix(in srgb,var(--text) 7%,transparent);border-radius:var(--r-lg);padding:var(--sp3) var(--sp3);text-align:center;box-shadow:var(--sh-sm)}
+    .stat{background:var(--surface);border:1px solid color-mix(in srgb,var(--text) 7%,transparent);border-radius:var(--r-lg);padding:var(--sp3);text-align:center;box-shadow:var(--sh-sm)}
     .stat-label{color:var(--muted);font-size:var(--text-xs);text-transform:uppercase;letter-spacing:.07em;margin-bottom:2px}
     .stat strong{display:block;font-size:var(--text-lg);line-height:1.2;font-weight:700}
 
-    /* ── Panel ── */
+    /* Panel */
     .panel{background:var(--surface);border:1px solid color-mix(in srgb,var(--text) 9%,transparent);border-radius:var(--r-xl);box-shadow:var(--sh-sm)}
     .panel-inner{padding:var(--sp4) var(--sp5)}
     .sec-title{font-size:var(--text-base);font-weight:700;margin-bottom:var(--sp1)}
     .sec-sub{color:var(--muted);font-size:var(--text-sm);margin-bottom:var(--sp4)}
 
-    /* ── Add form ── */
+    /* Add form */
     .add-form{display:grid;grid-template-columns:1fr auto;gap:var(--sp3);margin-bottom:var(--sp4)}
-    input[type=text],input[type=number]{
-      width:100%;padding:var(--sp3) var(--sp4);font-size:16px;
-      border:1px solid color-mix(in srgb,var(--text) 12%,transparent);
-      border-radius:var(--r-md);background:var(--surface2);color:var(--text);
-    }
+    input[type=text],input[type=number]{width:100%;padding:var(--sp3) var(--sp4);font-size:16px;border:1px solid color-mix(in srgb,var(--text) 12%,transparent);border-radius:var(--r-md);background:var(--surface2);color:var(--text)}
     input:focus-visible,button:focus-visible{outline:2px solid var(--primary);outline-offset:2px;border-radius:var(--r-md)}
 
-    /* ── Quick actions ── */
+    /* Quick actions */
     .quick-row{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp3)}
 
-    /* ── Player cards ── */
+    /* Player cards */
     .player-list{display:grid;gap:var(--sp3);margin-top:var(--sp4)}
-    .player-card{background:var(--surface2);border:1px solid color-mix(in srgb,var(--text) 8%,transparent);border-radius:var(--r-lg);padding:var(--sp4);display:grid;gap:var(--sp3)}
+    .player-card{background:var(--surface2);border:1px solid color-mix(in srgb,var(--text) 8%,transparent);border-radius:var(--r-lg);padding:var(--sp4);display:grid;gap:var(--sp3);transition:opacity var(--ease)}
+    .player-card.locked .rb-btn{opacity:.35;pointer-events:none;cursor:not-allowed}
+    .player-card.locked .lock-badge{display:inline-flex}
+    .lock-badge{display:none;align-items:center;gap:4px;font-size:var(--text-xs);color:var(--muted);background:var(--surfoff);padding:2px 8px;border-radius:var(--r-full);margin-left:var(--sp2)}
     .pc-top{display:flex;justify-content:space-between;align-items:center;gap:var(--sp3)}
+    .pc-name-wrap{display:flex;align-items:center;flex-wrap:wrap;gap:var(--sp1)}
     .pc-name{font-size:var(--text-lg);font-weight:700;line-height:1.1}
     .pc-total{font-size:var(--text-sm);color:var(--primary);font-weight:600}
     .rebuy-row{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:var(--sp3)}
-    .rb-btn{
-      min-height:54px;border-radius:var(--r-md);font-size:1.5rem;font-weight:700;
-      display:grid;place-items:center;width:100%;
-    }
+    .rb-btn{min-height:54px;border-radius:var(--r-md);font-size:1.5rem;font-weight:700;display:grid;place-items:center;width:100%;transition:background var(--ease),opacity var(--ease)}
     .rb-minus{background:var(--surfoff);color:var(--text);border:1px solid color-mix(in srgb,var(--text) 10%,transparent)}
     .rb-plus{background:var(--primary);color:#fff}
-    .rb-plus:hover{background:var(--primary-h)}
     .rb-center{text-align:center}
     .rb-num{font-size:clamp(1.6rem,6vw,2.2rem);font-weight:700;line-height:1;display:block}
     .rb-lbl{font-size:var(--text-xs);color:var(--muted);text-transform:uppercase;letter-spacing:.07em}
     .rm-btn{min-height:34px;padding:0 var(--sp3);border-radius:var(--r-full);font-size:var(--text-xs);font-weight:600;background:none;color:var(--faint);border:1px solid color-mix(in srgb,var(--text) 10%,transparent)}
     @media(hover:hover){.rm-btn:hover{color:var(--error);border-color:var(--error)}}
 
-    /* ── Buttons ── */
+    /* Buttons */
     .btn{min-height:52px;padding:var(--sp3) var(--sp4);border-radius:var(--r-md);font-size:var(--text-base);font-weight:600;display:inline-flex;align-items:center;justify-content:center;gap:var(--sp2);width:100%}
     .btn-primary{background:var(--primary);color:#fff}
     .btn-primary:hover{background:var(--primary-h)}
     .btn-secondary{background:var(--surface2);color:var(--text);border:1px solid color-mix(in srgb,var(--text) 12%,transparent)}
     .btn-danger{background:color-mix(in srgb,var(--error) 12%,var(--surface));color:var(--error);border:1px solid color-mix(in srgb,var(--error) 28%,transparent)}
     .btn-ghost{background:none;color:var(--muted);border:1px solid var(--divider)}
+    .btn-share{background:color-mix(in srgb,var(--success) 12%,var(--surface));color:var(--success);border:1px solid color-mix(in srgb,var(--success) 28%,transparent)}
 
-    /* ── Message ── */
+    /* Message */
     .msg{padding:var(--sp3) var(--sp4);border-radius:var(--r-lg);font-size:var(--text-sm);background:color-mix(in srgb,var(--primary) 8%,var(--surface));border:1px solid color-mix(in srgb,var(--primary) 15%,transparent);color:var(--text)}
     .msg.err{background:color-mix(in srgb,var(--error) 9%,var(--surface));border-color:color-mix(in srgb,var(--error) 22%,transparent);color:var(--error)}
     .msg.ok{background:color-mix(in srgb,var(--success) 9%,var(--surface));border-color:color-mix(in srgb,var(--success) 22%,transparent);color:var(--success)}
 
-    /* ── Remaining inputs ── */
+    /* Remaining inputs */
     .rem-list{display:grid;gap:var(--sp4);margin-top:var(--sp3)}
     .rem-item label{display:block;font-weight:600;margin-bottom:var(--sp2);font-size:var(--text-sm)}
     .rem-sublabel{color:var(--muted);font-weight:400;margin-left:var(--sp2)}
     .summary-note{font-size:var(--text-sm);color:var(--muted);margin-top:var(--sp3)}
 
-    /* ── Divider ── */
+    /* Divider */
     .divider{height:1px;background:var(--divider);margin:var(--sp4) 0}
 
-    /* ── Settlement ── */
+    /* Settlement */
     .settle-list{display:grid;gap:var(--sp2);margin-top:var(--sp3)}
     .standing-row{display:flex;justify-content:space-between;align-items:center;gap:var(--sp3);padding:var(--sp3) var(--sp4);background:var(--surface2);border:1px solid color-mix(in srgb,var(--text) 7%,transparent);border-radius:var(--r-lg);font-size:var(--text-sm)}
     .standing-name{font-weight:600}
@@ -163,25 +136,29 @@
     .transfer-row strong{color:var(--success)}
     .banner{padding:var(--sp4);border-radius:var(--r-lg);background:color-mix(in srgb,var(--primary) 9%,var(--surface));border:1px solid color-mix(in srgb,var(--primary) 18%,transparent);font-size:var(--text-sm);color:var(--text);margin-bottom:var(--sp4)}
 
-    /* ── Sticky CTA ── */
+    /* Share toast */
+    .toast{
+      position:fixed;bottom:calc(80px + env(safe-area-inset-bottom) + var(--sp4));left:50%;transform:translateX(-50%) translateY(12px);
+      background:var(--text);color:var(--bg);padding:var(--sp3) var(--sp5);border-radius:var(--r-full);
+      font-size:var(--text-sm);font-weight:600;white-space:nowrap;
+      opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;z-index:200;
+    }
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+    /* Sticky CTA */
     .sticky-cta{position:fixed;bottom:0;left:0;right:0;z-index:50;padding:var(--sp3) var(--sp4) calc(var(--sp3) + env(safe-area-inset-bottom));background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-top:1px solid color-mix(in srgb,var(--text) 8%,transparent)}
     .sticky-inner{max-width:600px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:var(--sp3)}
     .sticky-inner.solo{grid-template-columns:1fr}
 
     .hidden{display:none!important}
-
-    @media(min-width:520px){
-      body{padding:var(--sp6) var(--sp6) 100px}
-      .panel-inner{padding:var(--sp5) var(--sp6)}
-    }
+    @media(min-width:520px){body{padding:var(--sp6) var(--sp6) 110px}.panel-inner{padding:var(--sp5) var(--sp6)}}
     @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
   </style>
 </head>
 <body>
 <a href="#main" style="position:absolute;left:-9999px;top:0">Skip to content</a>
-<div class="shell">
 
-  <!-- Header -->
+<div class="shell">
   <header class="topbar">
     <div class="brand">
       <div class="logo" aria-hidden="true">
@@ -203,13 +180,10 @@
   </header>
 
   <main id="main">
-
-    <!-- ★ Always-visible scoreboard ── -->
+    <!-- Always-visible scoreboard -->
     <div class="scoreboard" id="scoreboard">
       <div class="scoreboard-title">Buy-in scoreboard</div>
-      <div id="scoreRows">
-        <div class="scoreboard-empty">No players yet</div>
-      </div>
+      <div id="scoreRows"><div class="scoreboard-empty">No players yet</div></div>
     </div>
 
     <!-- Stats -->
@@ -219,7 +193,7 @@
       <div class="stat"><div class="stat-label">Rebuys</div><strong id="statRebuys">0</strong></div>
     </div>
 
-    <!-- Add players panel -->
+    <!-- Setup panel -->
     <div class="panel" id="setupPanel">
       <div class="panel-inner">
         <div class="sec-title">Players</div>
@@ -236,10 +210,10 @@
       </div>
     </div>
 
-    <!-- End-game remaining panel -->
+    <!-- Remaining panel -->
     <div class="panel hidden" id="remainingPanel">
       <div class="panel-inner">
-        <div class="banner">Game ended — enter each player's remaining amount, then tap Settle.</div>
+        <div class="banner">🔒 Game ended — rebuys are locked. Enter each player's remaining amount, then tap Settle.</div>
         <div class="sec-title">Remaining money</div>
         <div class="sec-sub">How much does each player cash out with?</div>
         <div id="remList" class="rem-list"></div>
@@ -247,7 +221,7 @@
       </div>
     </div>
 
-    <!-- Settlement -->
+    <!-- Settlement panel -->
     <div class="panel hidden" id="settlementPanel">
       <div class="panel-inner">
         <div class="sec-title">Settlement</div>
@@ -255,16 +229,21 @@
         <div id="standingsList" class="settle-list"></div>
         <div class="divider"></div>
         <div id="transfersList" class="settle-list"></div>
+        <div style="margin-top:var(--sp4)">
+          <button class="btn btn-share" id="shareBtn">📋&nbsp; Copy &amp; share result</button>
+        </div>
       </div>
     </div>
 
     <!-- Status message -->
     <div class="msg" id="msgBox">Add players to get started.</div>
-
   </main>
 </div>
 
-<!-- Sticky bottom CTA -->
+<!-- Share toast -->
+<div class="toast" id="toast">Copied to clipboard!</div>
+
+<!-- Sticky CTA -->
 <div class="sticky-cta">
   <div class="sticky-inner solo" id="ctaInner">
     <button class="btn btn-primary" id="endBtn">🏁&nbsp; End game</button>
@@ -272,13 +251,11 @@
 </div>
 
 <script>
-const SKEY = 'poker_v3';
-const state = {players:[], ended:false, nextId:1};
+const SKEY='poker_v3';
+const state={players:[],ended:false,nextId:1};
 
 /* ── Storage ── */
-function save(){
-  try{localStorage.setItem(SKEY,JSON.stringify(state));pulse();}catch(e){}
-}
+function save(){try{localStorage.setItem(SKEY,JSON.stringify(state));pulse();}catch(e){}}
 function load(){
   try{
     const d=JSON.parse(localStorage.getItem(SKEY)||'null');
@@ -286,29 +263,31 @@ function load(){
   }catch(e){}
 }
 let _pt;
-function pulse(){
-  const el=document.getElementById('saveDot');
-  el.classList.add('on');clearTimeout(_pt);_pt=setTimeout(()=>el.classList.remove('on'),1600);
-}
+function pulse(){const el=$('saveDot');el.classList.add('on');clearTimeout(_pt);_pt=setTimeout(()=>el.classList.remove('on'),1600);}
 
 /* ── Helpers ── */
 const $=id=>document.getElementById(id);
 const money=v=>'$'+Number(v).toFixed(2).replace('.00','');
 const totalIn=p=>10+p.rebuys*10;
 
+/* ── Toast ── */
+let _tt;
+function showToast(txt){
+  const t=$('toast');t.textContent=txt;t.classList.add('show');
+  clearTimeout(_tt);_tt=setTimeout(()=>t.classList.remove('show'),2400);
+}
+
 /* ── Mutations ── */
 function addPlayer(name){state.players.push({id:state.nextId++,name,rebuys:0,remaining:''});save();render();}
 function removePlayer(id){state.players=state.players.filter(p=>p.id!==id);save();render();}
 function setRebuy(id,delta){
+  if(state.ended)return; // locked during end-game
   const p=state.players.find(p=>p.id===id);if(!p)return;
   p.rebuys=Math.max(0,p.rebuys+delta);save();render();
 }
-function setRemaining(id,v){
-  const p=state.players.find(p=>p.id===id);if(!p)return;
-  p.remaining=v;save();updateRemSummary();
-}
+function setRemaining(id,v){const p=state.players.find(p=>p.id===id);if(!p)return;p.remaining=v;save();updateRemSummary();}
 
-/* ── Scoreboard (always visible) ── */
+/* ── Scoreboard ── */
 function renderScoreboard(){
   const el=$('scoreRows');
   if(!state.players.length){el.innerHTML='<div class="scoreboard-empty">No players yet</div>';return;}
@@ -316,8 +295,8 @@ function renderScoreboard(){
     <div class="score-row">
       <span class="score-name">${p.name}</span>
       <div class="score-chips">
-        <span class="chip chip-base" title="Base buy-in">$10</span>
-        ${p.rebuys>0?`<span class="chip chip-rebuy" title="${p.rebuys} rebuy${p.rebuys!==1?'s':''}">${p.rebuys}×&nbsp;rebuy</span>`:''}
+        <span class="chip chip-base">$10</span>
+        ${p.rebuys>0?`<span class="chip chip-rebuy">${p.rebuys}× rebuy</span>`:''}
         <span class="chip chip-total">${money(totalIn(p))}</span>
       </div>
     </div>`).join('');
@@ -332,35 +311,40 @@ function renderStats(){
 
 /* ── Player cards ── */
 function renderPlayers(){
-  const el=$('playerList');
-  el.innerHTML='';
+  const el=$('playerList');el.innerHTML='';
   state.players.forEach(p=>{
     const c=document.createElement('article');
-    c.className='player-card';
+    c.className='player-card'+(state.ended?' locked':'');
     c.innerHTML=`
       <div class="pc-top">
-        <div><div class="pc-name">${p.name}</div><div class="pc-total">${money(totalIn(p))} in · ${p.rebuys} rebuy${p.rebuys!==1?'s':''}</div></div>
-        <button class="rm-btn" aria-label="Remove ${p.name}">Remove</button>
+        <div class="pc-name-wrap">
+          <span class="pc-name">${p.name}</span>
+          ${state.ended?'<span class="lock-badge">🔒 locked</span>':''}
+        </div>
+        <div style="display:flex;align-items:center;gap:var(--sp2)">
+          <span class="pc-total">${money(totalIn(p))} in</span>
+          ${!state.ended?`<button class="rm-btn" aria-label="Remove ${p.name}">Remove</button>`:''}
+        </div>
       </div>
       <div class="rebuy-row">
-        <button class="rb-btn rb-minus" aria-label="Remove rebuy for ${p.name}">−</button>
+        <button class="rb-btn rb-minus" aria-label="Remove rebuy for ${p.name}" ${state.ended?'disabled':''}>−</button>
         <div class="rb-center"><span class="rb-num">${p.rebuys}</span><span class="rb-lbl">Rebuys</span></div>
-        <button class="rb-btn rb-plus" aria-label="Add rebuy for ${p.name}">+</button>
+        <button class="rb-btn rb-plus" aria-label="Add rebuy for ${p.name}" ${state.ended?'disabled':''}>+</button>
       </div>`;
-    c.querySelector('.rm-btn').addEventListener('click',()=>removePlayer(p.id));
+    if(!state.ended){
+      c.querySelector('.rm-btn').addEventListener('click',()=>removePlayer(p.id));
+    }
     c.querySelector('.rb-minus').addEventListener('click',()=>setRebuy(p.id,-1));
-    c.querySelector('.rb-plus').addEventListener('click',()=>setRebuy(p.id,+1));
+    c.querySelector('.rb-plus').addEventListener('click', ()=>setRebuy(p.id,+1));
     el.appendChild(c);
   });
 }
 
 /* ── Remaining inputs ── */
 function renderRemaining(){
-  const el=$('remList');
-  el.innerHTML='';
+  const el=$('remList');el.innerHTML='';
   state.players.forEach(p=>{
-    const d=document.createElement('div');
-    d.className='rem-item';
+    const d=document.createElement('div');d.className='rem-item';
     d.innerHTML=`<label for="rem-${p.id}">${p.name}<span class="rem-sublabel">${money(totalIn(p))} in</span></label>
       <input id="rem-${p.id}" type="number" inputmode="decimal" min="0" step="10" placeholder="0" value="${p.remaining}">`;
     d.querySelector('input').addEventListener('input',e=>setRemaining(p.id,e.target.value));
@@ -368,7 +352,6 @@ function renderRemaining(){
   });
   updateRemSummary();
 }
-
 function updateRemSummary(){
   const entered=state.players.reduce((s,p)=>s+(Number(p.remaining)||0),0);
   const total=state.players.reduce((s,p)=>s+totalIn(p),0);
@@ -403,9 +386,7 @@ function endGame(){
   $('remainingPanel').scrollIntoView({behavior:'smooth',block:'start'});
 }
 function resumeGame(){
-  state.ended=false;
-  $('settlementPanel').classList.add('hidden');
-  save();render();
+  state.ended=false;$('settlementPanel').classList.add('hidden');save();render();
 }
 
 /* ── Settle ── */
@@ -418,6 +399,7 @@ function settleGame(){
   const tRem=Number(results.reduce((s,p)=>s+p.rem,0).toFixed(2));
   const tIn=Number(results.reduce((s,p)=>s+p.buyIn,0).toFixed(2));
   if(Math.abs(tRem-tIn)>.01){msg(`Totals don't balance: remaining ${money(tRem)} vs buy-ins ${money(tIn)}.`,'err');$('settlementPanel').classList.add('hidden');return;}
+
   const debtors=results.filter(p=>p.net<0).map(p=>({...p,amt:Math.abs(p.net)})).sort((a,b)=>b.amt-a.amt);
   const creditors=results.filter(p=>p.net>0).map(p=>({...p,amt:p.net})).sort((a,b)=>b.amt-a.amt);
   const transfers=[];
@@ -429,44 +411,87 @@ function settleGame(){
     creditors[j].amt=Number((creditors[j].amt-pay).toFixed(2));
     if(debtors[i].amt<.01)i++;if(creditors[j].amt<.01)j++;
   }
+
+  /* store transfers for sharing */
+  state._lastTransfers=transfers;
+  state._lastResults=results;
+
   $('standingsList').innerHTML=results.map(p=>{
     const cls=p.net>0?'pos':p.net<0?'neg':'zero';
     const txt=p.net>0?`+${money(p.net)}`:p.net<0?`−${money(Math.abs(p.net))}`:'even';
     return `<div class="standing-row"><span class="standing-name">${p.name}</span><span class="standing-val ${cls}">${txt}</span></div>`;
   }).join('');
+
   $('transfersList').innerHTML=!transfers.length
     ?`<div class="transfer-row">🎉 Nobody owes anyone — everyone broke even!</div>`
     :transfers.map(t=>`<div class="transfer-row"><strong>${t.from}</strong> pays <strong>${t.to}</strong> — ${money(t.amount)}</div>`).join('');
+
   $('settlementPanel').classList.remove('hidden');
   msg('Settlement ready. ✓','ok');
   $('settlementPanel').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
-function msg(text,type=''){
-  const el=$('msgBox');el.textContent=text;el.className='msg'+(type?' '+type:'');
+/* ── Share ── */
+function buildShareText(){
+  const now=new Date();
+  const date=now.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  const results=state._lastResults||[];
+  const transfers=state._lastTransfers||[];
+  let lines=[`🃏 Poker Night — ${date}`,``];
+  lines.push(`Standings:`);
+  results.forEach(p=>{
+    const txt=p.net>0?`+${money(p.net)}`:p.net<0?`-${money(Math.abs(p.net))}`:'even';
+    lines.push(`  ${p.name}: ${txt}`);
+  });
+  lines.push(``);
+  if(!transfers.length){
+    lines.push(`Everyone broke even — no transfers needed!`);
+  }else{
+    lines.push(`Transfers:`);
+    transfers.forEach(t=>lines.push(`  ${t.from} → ${t.to}: ${money(t.amount)}`));
+  }
+  return lines.join('\n');
 }
+
+$('shareBtn').addEventListener('click',async()=>{
+  const text=buildShareText();
+  /* Try native share sheet first (iOS/Android) */
+  if(navigator.share){
+    try{await navigator.share({title:'Poker Night Settlement',text});return;}catch(e){/* user cancelled or not supported */}
+  }
+  /* Fallback: clipboard */
+  try{
+    await navigator.clipboard.writeText(text);
+    showToast('Copied to clipboard!');
+  }catch(e){
+    /* Last resort: textarea trick */
+    const ta=document.createElement('textarea');
+    ta.value=text;ta.style.position='fixed';ta.style.opacity='0';
+    document.body.appendChild(ta);ta.select();
+    document.execCommand('copy');document.body.removeChild(ta);
+    showToast('Copied to clipboard!');
+  }
+});
+
+/* ── Msg ── */
+function msg(text,type=''){const el=$('msgBox');el.textContent=text;el.className='msg'+(type?' '+type:'');}
 
 /* ── Main render ── */
 function render(){
-  renderScoreboard();
-  renderStats();
-  renderPlayers();
-  renderCta();
+  renderScoreboard();renderStats();renderPlayers();renderCta();
   $('remainingPanel').classList.toggle('hidden',!state.ended);
-  if(state.ended) renderRemaining();
-  if(!state.ended) $('settlementPanel').classList.add('hidden');
+  if(state.ended)renderRemaining();
+  if(!state.ended)$('settlementPanel').classList.add('hidden');
 }
 
-/* ── Event listeners ── */
+/* ── Events ── */
 $('addForm').addEventListener('submit',e=>{
   e.preventDefault();
   const name=$('nameInput').value.trim();
   if(!name)return;
   if(state.players.some(p=>p.name.toLowerCase()===name.toLowerCase())){msg('Player names must be unique.','err');return;}
-  addPlayer(name);$('nameInput').value='';$('nameInput').focus();
-  msg(`${name} added.`);
+  addPlayer(name);$('nameInput').value='';$('nameInput').focus();msg(`${name} added.`);
 });
-
 $('sampleBtn').addEventListener('click',()=>{
   if(state.players.length&&!confirm('Replace current players with a sample table?'))return;
   state.players=[
@@ -478,12 +503,10 @@ $('sampleBtn').addEventListener('click',()=>{
   state.ended=false;$('settlementPanel').classList.add('hidden');
   msg('Sample table loaded.');save();render();
 });
-
 $('resetBtn').addEventListener('click',()=>{
   if(!confirm('Reset everything and start a new game?'))return;
   state.players=[];state.ended=false;state.nextId=1;
-  $('settlementPanel').classList.add('hidden');
-  msg('Game reset. Add players to start.');save();render();
+  $('settlementPanel').classList.add('hidden');msg('Game reset.');save();render();
 });
 
 /* ── Theme ── */
@@ -494,7 +517,6 @@ $('resetBtn').addEventListener('click',()=>{
   btn.addEventListener('click',()=>{t=t==='dark'?'light':'dark';root.setAttribute('data-theme',t);btn.textContent=t==='dark'?'☀️':'🌙';});
 })();
 
-/* ── Boot ── */
 load();render();
 </script>
 </body>
