@@ -52,7 +52,18 @@
 
     /* Scoreboard */
     .scoreboard{background:var(--surface);border:1px solid color-mix(in srgb,var(--text) 9%,transparent);border-radius:var(--r-xl);box-shadow:var(--sh-sm);overflow:hidden}
-    .scoreboard-title{padding:var(--sp3) var(--sp4) var(--sp2);font-size:var(--text-xs);font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--muted)}
+    .scoreboard-title{
+      padding:var(--sp3) var(--sp4) var(--sp2);
+      font-size:var(--text-xs);font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);
+      display:flex;justify-content:space-between;align-items:center;
+    }
+    .sort-btn{
+      font-size:var(--text-xs);font-weight:600;color:var(--primary);
+      background:color-mix(in srgb,var(--primary) 10%,var(--surface));
+      border:1px solid color-mix(in srgb,var(--primary) 22%,transparent);
+      padding:3px 10px;border-radius:var(--r-full);
+      text-transform:none;letter-spacing:0;min-height:unset;
+    }
     .score-row{display:flex;align-items:center;justify-content:space-between;padding:var(--sp3) var(--sp4);gap:var(--sp3);border-top:1px solid var(--divider)}
     .score-row:first-of-type{border-top:none}
     .score-name{font-weight:600;font-size:var(--text-base);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -85,7 +96,7 @@
 
     /* Player cards */
     .player-list{display:grid;gap:var(--sp3);margin-top:var(--sp4)}
-    .player-card{background:var(--surface2);border:1px solid color-mix(in srgb,var(--text) 8%,transparent);border-radius:var(--r-lg);padding:var(--sp4);display:grid;gap:var(--sp3);transition:opacity var(--ease)}
+    .player-card{background:var(--surface2);border:1px solid color-mix(in srgb,var(--text) 8%,transparent);border-radius:var(--r-lg);padding:var(--sp4);display:grid;gap:var(--sp3)}
     .player-card.locked .rb-btn{opacity:.35;pointer-events:none;cursor:not-allowed}
     .player-card.locked .lock-badge{display:inline-flex}
     .lock-badge{display:none;align-items:center;gap:4px;font-size:var(--text-xs);color:var(--muted);background:var(--surfoff);padding:2px 8px;border-radius:var(--r-full);margin-left:var(--sp2)}
@@ -107,9 +118,8 @@
     .btn{min-height:52px;padding:var(--sp3) var(--sp4);border-radius:var(--r-md);font-size:var(--text-base);font-weight:600;display:inline-flex;align-items:center;justify-content:center;gap:var(--sp2);width:100%}
     .btn-primary{background:var(--primary);color:#fff}
     .btn-primary:hover{background:var(--primary-h)}
-    .btn-secondary{background:var(--surface2);color:var(--text);border:1px solid color-mix(in srgb,var(--text) 12%,transparent)}
-    .btn-danger{background:color-mix(in srgb,var(--error) 12%,var(--surface));color:var(--error);border:1px solid color-mix(in srgb,var(--error) 28%,transparent)}
     .btn-ghost{background:none;color:var(--muted);border:1px solid var(--divider)}
+    .btn-danger{background:color-mix(in srgb,var(--error) 12%,var(--surface));color:var(--error);border:1px solid color-mix(in srgb,var(--error) 28%,transparent)}
     .btn-share{background:color-mix(in srgb,var(--success) 12%,var(--surface));color:var(--success);border:1px solid color-mix(in srgb,var(--success) 28%,transparent)}
 
     /* Message */
@@ -117,7 +127,7 @@
     .msg.err{background:color-mix(in srgb,var(--error) 9%,var(--surface));border-color:color-mix(in srgb,var(--error) 22%,transparent);color:var(--error)}
     .msg.ok{background:color-mix(in srgb,var(--success) 9%,var(--surface));border-color:color-mix(in srgb,var(--success) 22%,transparent);color:var(--success)}
 
-    /* Remaining inputs */
+    /* Remaining */
     .rem-list{display:grid;gap:var(--sp4);margin-top:var(--sp3)}
     .rem-item label{display:block;font-weight:600;margin-bottom:var(--sp2);font-size:var(--text-sm)}
     .rem-sublabel{color:var(--muted);font-weight:400;margin-left:var(--sp2)}
@@ -136,13 +146,8 @@
     .transfer-row strong{color:var(--success)}
     .banner{padding:var(--sp4);border-radius:var(--r-lg);background:color-mix(in srgb,var(--primary) 9%,var(--surface));border:1px solid color-mix(in srgb,var(--primary) 18%,transparent);font-size:var(--text-sm);color:var(--text);margin-bottom:var(--sp4)}
 
-    /* Share toast */
-    .toast{
-      position:fixed;bottom:calc(80px + env(safe-area-inset-bottom) + var(--sp4));left:50%;transform:translateX(-50%) translateY(12px);
-      background:var(--text);color:var(--bg);padding:var(--sp3) var(--sp5);border-radius:var(--r-full);
-      font-size:var(--text-sm);font-weight:600;white-space:nowrap;
-      opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;z-index:200;
-    }
+    /* Toast */
+    .toast{position:fixed;bottom:calc(80px + env(safe-area-inset-bottom) + var(--sp4));left:50%;transform:translateX(-50%) translateY(12px);background:var(--text);color:var(--bg);padding:var(--sp3) var(--sp5);border-radius:var(--r-full);font-size:var(--text-sm);font-weight:600;white-space:nowrap;opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;z-index:200}
     .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
     /* Sticky CTA */
@@ -170,7 +175,7 @@
       </div>
       <div class="brand-text">
         <h1>Poker Tracker</h1>
-        <p>$10 buy-in · $10 rebuys · auto-saved</p>
+        <p>$10 buy-in &middot; $10 rebuys &middot; auto-saved</p>
       </div>
     </div>
     <div class="hd-right">
@@ -181,8 +186,11 @@
 
   <main id="main">
     <!-- Always-visible scoreboard -->
-    <div class="scoreboard" id="scoreboard">
-      <div class="scoreboard-title">Buy-in scoreboard</div>
+    <div class="scoreboard">
+      <div class="scoreboard-title">
+        <span>Buy-in scoreboard</span>
+        <button class="sort-btn" id="sortBtn">&#8645; Sort</button>
+      </div>
       <div id="scoreRows"><div class="scoreboard-empty">No players yet</div></div>
     </div>
 
@@ -213,9 +221,9 @@
     <!-- Remaining panel -->
     <div class="panel hidden" id="remainingPanel">
       <div class="panel-inner">
-        <div class="banner">🔒 Game ended — rebuys are locked. Enter each player's remaining amount, then tap Settle.</div>
+        <div class="banner">&#128274; Game ended &mdash; rebuys are locked. Enter each player's remaining amount (leave blank for $0), then tap Settle.</div>
         <div class="sec-title">Remaining money</div>
-        <div class="sec-sub">How much does each player cash out with?</div>
+        <div class="sec-sub">How much does each player cash out with? Leave blank if they lost everything.</div>
         <div id="remList" class="rem-list"></div>
         <p class="summary-note" id="remSummary"></p>
       </div>
@@ -230,7 +238,7 @@
         <div class="divider"></div>
         <div id="transfersList" class="settle-list"></div>
         <div style="margin-top:var(--sp4)">
-          <button class="btn btn-share" id="shareBtn">📋&nbsp; Copy &amp; share result</button>
+          <button class="btn btn-share" id="shareBtn">&#128203;&nbsp; Copy &amp; share result</button>
         </div>
       </div>
     </div>
@@ -240,30 +248,29 @@
   </main>
 </div>
 
-<!-- Share toast -->
 <div class="toast" id="toast">Copied to clipboard!</div>
 
-<!-- Sticky CTA -->
 <div class="sticky-cta">
-  <div class="sticky-inner solo" id="ctaInner">
-    <button class="btn btn-primary" id="endBtn">🏁&nbsp; End game</button>
-  </div>
+  <div class="sticky-inner solo" id="ctaInner"></div>
 </div>
 
 <script>
 const SKEY='poker_v3';
 const state={players:[],ended:false,nextId:1};
+let sortAsc=false; // scoreboard sort: false=high→low, true=low→high
 
 /* ── Storage ── */
 function save(){try{localStorage.setItem(SKEY,JSON.stringify(state));pulse();}catch(e){}}
 function load(){
   try{
     const d=JSON.parse(localStorage.getItem(SKEY)||'null');
-    if(d&&Array.isArray(d.players)){state.players=d.players;state.ended=d.ended||false;state.nextId=d.nextId||d.players.length+1;}
+    if(d&&Array.isArray(d.players)){
+      state.players=d.players;state.ended=d.ended||false;state.nextId=d.nextId||d.players.length+1;
+    }
   }catch(e){}
 }
 let _pt;
-function pulse(){const el=$('saveDot');el.classList.add('on');clearTimeout(_pt);_pt=setTimeout(()=>el.classList.remove('on'),1600);}
+function pulse(){const el=document.getElementById('saveDot');el.classList.add('on');clearTimeout(_pt);_pt=setTimeout(()=>el.classList.remove('on'),1600);}
 
 /* ── Helpers ── */
 const $=id=>document.getElementById(id);
@@ -281,7 +288,7 @@ function showToast(txt){
 function addPlayer(name){state.players.push({id:state.nextId++,name,rebuys:0,remaining:''});save();render();}
 function removePlayer(id){state.players=state.players.filter(p=>p.id!==id);save();render();}
 function setRebuy(id,delta){
-  if(state.ended)return; // locked during end-game
+  if(state.ended)return;
   const p=state.players.find(p=>p.id===id);if(!p)return;
   p.rebuys=Math.max(0,p.rebuys+delta);save();render();
 }
@@ -291,15 +298,18 @@ function setRemaining(id,v){const p=state.players.find(p=>p.id===id);if(!p)retur
 function renderScoreboard(){
   const el=$('scoreRows');
   if(!state.players.length){el.innerHTML='<div class="scoreboard-empty">No players yet</div>';return;}
-  el.innerHTML=state.players.map(p=>`
+  const sorted=[...state.players].sort((a,b)=>sortAsc?totalIn(a)-totalIn(b):totalIn(b)-totalIn(a));
+  el.innerHTML=sorted.map(p=>`
     <div class="score-row">
       <span class="score-name">${p.name}</span>
       <div class="score-chips">
         <span class="chip chip-base">$10</span>
-        ${p.rebuys>0?`<span class="chip chip-rebuy">${p.rebuys}× rebuy</span>`:''}
+        ${p.rebuys>0?`<span class="chip chip-rebuy">${p.rebuys}&times;&nbsp;rebuy</span>`:''}
         <span class="chip chip-total">${money(totalIn(p))}</span>
       </div>
     </div>`).join('');
+  const sb=$('sortBtn');
+  if(sb)sb.innerHTML=sortAsc?'&#8593; Low &rarr; High':'&#8595; High &rarr; Low';
 }
 
 /* ── Stats ── */
@@ -319,7 +329,7 @@ function renderPlayers(){
       <div class="pc-top">
         <div class="pc-name-wrap">
           <span class="pc-name">${p.name}</span>
-          ${state.ended?'<span class="lock-badge">🔒 locked</span>':''}
+          ${state.ended?'<span class="lock-badge">&#128274; locked</span>':''}
         </div>
         <div style="display:flex;align-items:center;gap:var(--sp2)">
           <span class="pc-total">${money(totalIn(p))} in</span>
@@ -327,15 +337,13 @@ function renderPlayers(){
         </div>
       </div>
       <div class="rebuy-row">
-        <button class="rb-btn rb-minus" aria-label="Remove rebuy for ${p.name}" ${state.ended?'disabled':''}>−</button>
+        <button class="rb-btn rb-minus" aria-label="Remove rebuy for ${p.name}" ${state.ended?'disabled':''}>&#8722;</button>
         <div class="rb-center"><span class="rb-num">${p.rebuys}</span><span class="rb-lbl">Rebuys</span></div>
         <button class="rb-btn rb-plus" aria-label="Add rebuy for ${p.name}" ${state.ended?'disabled':''}>+</button>
       </div>`;
-    if(!state.ended){
-      c.querySelector('.rm-btn').addEventListener('click',()=>removePlayer(p.id));
-    }
+    if(!state.ended) c.querySelector('.rm-btn').addEventListener('click',()=>removePlayer(p.id));
     c.querySelector('.rb-minus').addEventListener('click',()=>setRebuy(p.id,-1));
-    c.querySelector('.rb-plus').addEventListener('click', ()=>setRebuy(p.id,+1));
+    c.querySelector('.rb-plus').addEventListener('click',()=>setRebuy(p.id,+1));
     el.appendChild(c);
   });
 }
@@ -346,20 +354,21 @@ function renderRemaining(){
   state.players.forEach(p=>{
     const d=document.createElement('div');d.className='rem-item';
     d.innerHTML=`<label for="rem-${p.id}">${p.name}<span class="rem-sublabel">${money(totalIn(p))} in</span></label>
-      <input id="rem-${p.id}" type="number" inputmode="decimal" min="0" step="10" placeholder="0" value="${p.remaining}">`;
+      <input id="rem-${p.id}" type="number" inputmode="decimal" min="0" step="10" placeholder="0 (blank = lost all)" value="${p.remaining}">`;
     d.querySelector('input').addEventListener('input',e=>setRemaining(p.id,e.target.value));
     el.appendChild(d);
   });
   updateRemSummary();
 }
+
 function updateRemSummary(){
-  const entered=state.players.reduce((s,p)=>s+(Number(p.remaining)||0),0);
+  const entered=state.players.reduce((s,p)=>s+(p.remaining===''||p.remaining===null?0:Number(p.remaining)),0);
   const total=state.players.reduce((s,p)=>s+totalIn(p),0);
   const diff=Number((entered-total).toFixed(2));
   const el=$('remSummary');
-  if(Math.abs(diff)<.01)el.textContent=`✓ Entered total matches pot: ${money(entered)}.`;
-  else if(diff>0)el.textContent=`Entered total is ${money(diff)} too high — check the amounts.`;
-  else el.textContent=`Entered total is ${money(Math.abs(diff))} too low — check the amounts.`;
+  if(Math.abs(diff)<.01) el.textContent=`\u2713 Entered total matches pot: ${money(entered)}.`;
+  else if(diff>0) el.textContent=`Entered total is ${money(diff)} too high \u2014 check the amounts.`;
+  else el.textContent=`Entered total is ${money(Math.abs(diff))} too low \u2014 check the amounts.`;
 }
 
 /* ── CTA bar ── */
@@ -367,13 +376,13 @@ function renderCta(){
   const inner=$('ctaInner');
   if(!state.ended){
     inner.className='sticky-inner solo';
-    inner.innerHTML=`<button class="btn btn-primary" id="endBtn">🏁&nbsp; End game</button>`;
+    inner.innerHTML=`<button class="btn btn-primary" id="endBtn">&#127937;&nbsp; End game</button>`;
     $('endBtn').addEventListener('click',endGame);
   }else{
     inner.className='sticky-inner';
     inner.innerHTML=`
-      <button class="btn btn-ghost" id="resumeBtn">← Edit rebuys</button>
-      <button class="btn btn-primary" id="settleBtn">💵&nbsp; Settle</button>`;
+      <button class="btn btn-ghost" id="resumeBtn">&larr; Edit rebuys</button>
+      <button class="btn btn-primary" id="settleBtn">&#128181;&nbsp; Settle</button>`;
     $('settleBtn').addEventListener('click',settleGame);
     $('resumeBtn').addEventListener('click',resumeGame);
   }
@@ -392,13 +401,17 @@ function resumeGame(){
 /* ── Settle ── */
 function settleGame(){
   const results=state.players.map(p=>({
-    ...p,buyIn:totalIn(p),
-    rem:p.remaining===''||p.remaining===null?NaN:Number(p.remaining),
+    ...p,
+    buyIn:totalIn(p),
+    rem:p.remaining===''||p.remaining===null?0:Number(p.remaining),
   })).map(p=>({...p,net:Number((p.rem-p.buyIn).toFixed(2))}));
-  if(results.some(p=>isNaN(p.rem))){msg('Enter a remaining amount for every player.','err');$('settlementPanel').classList.add('hidden');return;}
+
   const tRem=Number(results.reduce((s,p)=>s+p.rem,0).toFixed(2));
   const tIn=Number(results.reduce((s,p)=>s+p.buyIn,0).toFixed(2));
-  if(Math.abs(tRem-tIn)>.01){msg(`Totals don't balance: remaining ${money(tRem)} vs buy-ins ${money(tIn)}.`,'err');$('settlementPanel').classList.add('hidden');return;}
+  if(Math.abs(tRem-tIn)>.01){
+    msg(`Totals don\u2019t balance: remaining ${money(tRem)} vs buy-ins ${money(tIn)}.`,'err');
+    $('settlementPanel').classList.add('hidden');return;
+  }
 
   const debtors=results.filter(p=>p.net<0).map(p=>({...p,amt:Math.abs(p.net)})).sort((a,b)=>b.amt-a.amt);
   const creditors=results.filter(p=>p.net>0).map(p=>({...p,amt:p.net})).sort((a,b)=>b.amt-a.amt);
@@ -412,66 +425,53 @@ function settleGame(){
     if(debtors[i].amt<.01)i++;if(creditors[j].amt<.01)j++;
   }
 
-  /* store transfers for sharing */
   state._lastTransfers=transfers;
   state._lastResults=results;
 
   $('standingsList').innerHTML=results.map(p=>{
     const cls=p.net>0?'pos':p.net<0?'neg':'zero';
-    const txt=p.net>0?`+${money(p.net)}`:p.net<0?`−${money(Math.abs(p.net))}`:'even';
+    const txt=p.net>0?`+${money(p.net)}`:p.net<0?`\u2212${money(Math.abs(p.net))}`:'even';
     return `<div class="standing-row"><span class="standing-name">${p.name}</span><span class="standing-val ${cls}">${txt}</span></div>`;
   }).join('');
 
   $('transfersList').innerHTML=!transfers.length
-    ?`<div class="transfer-row">🎉 Nobody owes anyone — everyone broke even!</div>`
-    :transfers.map(t=>`<div class="transfer-row"><strong>${t.from}</strong> pays <strong>${t.to}</strong> — ${money(t.amount)}</div>`).join('');
+    ?`<div class="transfer-row">&#127881; Nobody owes anyone \u2014 everyone broke even!</div>`
+    :transfers.map(t=>`<div class="transfer-row"><strong>${t.from}</strong> pays <strong>${t.to}</strong> \u2014 ${money(t.amount)}</div>`).join('');
 
   $('settlementPanel').classList.remove('hidden');
-  msg('Settlement ready. ✓','ok');
+  msg('Settlement ready. \u2713','ok');
   $('settlementPanel').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
 /* ── Share ── */
 function buildShareText(){
-  const now=new Date();
-  const date=now.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  const date=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
   const results=state._lastResults||[];
   const transfers=state._lastTransfers||[];
-  let lines=[`🃏 Poker Night — ${date}`,``];
-  lines.push(`Standings:`);
+  let lines=[`\uD83C\uDCCF Poker Night \u2014 ${date}`,``,'Standings:'];
   results.forEach(p=>{
     const txt=p.net>0?`+${money(p.net)}`:p.net<0?`-${money(Math.abs(p.net))}`:'even';
     lines.push(`  ${p.name}: ${txt}`);
   });
-  lines.push(``);
-  if(!transfers.length){
-    lines.push(`Everyone broke even — no transfers needed!`);
-  }else{
-    lines.push(`Transfers:`);
-    transfers.forEach(t=>lines.push(`  ${t.from} → ${t.to}: ${money(t.amount)}`));
-  }
+  lines.push('');
+  if(!transfers.length){lines.push('Everyone broke even \u2014 no transfers needed!');}
+  else{lines.push('Transfers:');transfers.forEach(t=>lines.push(`  ${t.from} \u2192 ${t.to}: ${money(t.amount)}`));}
   return lines.join('\n');
 }
 
 $('shareBtn').addEventListener('click',async()=>{
   const text=buildShareText();
-  /* Try native share sheet first (iOS/Android) */
-  if(navigator.share){
-    try{await navigator.share({title:'Poker Night Settlement',text});return;}catch(e){/* user cancelled or not supported */}
-  }
-  /* Fallback: clipboard */
-  try{
-    await navigator.clipboard.writeText(text);
-    showToast('Copied to clipboard!');
-  }catch(e){
-    /* Last resort: textarea trick */
-    const ta=document.createElement('textarea');
-    ta.value=text;ta.style.position='fixed';ta.style.opacity='0';
-    document.body.appendChild(ta);ta.select();
-    document.execCommand('copy');document.body.removeChild(ta);
+  if(navigator.share){try{await navigator.share({title:'Poker Night Settlement',text});return;}catch(e){}}
+  try{await navigator.clipboard.writeText(text);showToast('Copied to clipboard!');}
+  catch(e){
+    const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';
+    document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
     showToast('Copied to clipboard!');
   }
 });
+
+/* ── Sort button ── */
+$('sortBtn').addEventListener('click',()=>{sortAsc=!sortAsc;renderScoreboard();});
 
 /* ── Msg ── */
 function msg(text,type=''){const el=$('msgBox');el.textContent=text;el.className='msg'+(type?' '+type:'');}
