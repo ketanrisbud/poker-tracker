@@ -260,12 +260,38 @@ const state={players:[],ended:false,nextId:1};
 let sortAsc=false; // scoreboard sort: false=high→low, true=low→high
 
 /* ── Storage ── */
-function save(){try{localStorage.setItem(SKEY,JSON.stringify(state));pulse();}catch(e){}}
+function snapshotState(){
+  return {
+    players: state.players.map(p => ({
+      id: p.id,
+      name: p.name,
+      rebuys: Number(p.rebuys) || 0,
+      remaining: p.remaining ?? ''
+    })),
+    ended: !!state.ended,
+    nextId: Number(state.nextId) || (state.players.length + 1)
+  };
+}
+function save(){
+  try{
+    localStorage.setItem(SKEY, JSON.stringify(snapshotState()));
+    pulse();
+  }catch(e){}
+}
 function load(){
   try{
-    const d=JSON.parse(localStorage.getItem(SKEY)||'null');
-    if(d&&Array.isArray(d.players)){
-      state.players=d.players;state.ended=d.ended||false;state.nextId=d.nextId||d.players.length+1;
+    const raw = localStorage.getItem(SKEY);
+    if(!raw) return;
+    const d = JSON.parse(raw);
+    if(d && Array.isArray(d.players)){
+      state.players = d.players.map((p, idx) => ({
+        id: Number(p.id) || (idx + 1),
+        name: String(p.name || `Player ${idx + 1}`),
+        rebuys: Math.max(0, Number(p.rebuys) || 0),
+        remaining: p.remaining ?? ''
+      }));
+      state.ended = !!d.ended;
+      state.nextId = Number(d.nextId) || (state.players.reduce((m,p)=>Math.max(m,p.id),0) + 1);
     }
   }catch(e){}
 }
@@ -482,6 +508,7 @@ function render(){
   $('remainingPanel').classList.toggle('hidden',!state.ended);
   if(state.ended)renderRemaining();
   if(!state.ended)$('settlementPanel').classList.add('hidden');
+  save();
 }
 
 /* ── Events ── */
@@ -517,7 +544,10 @@ $('resetBtn').addEventListener('click',()=>{
   btn.addEventListener('click',()=>{t=t==='dark'?'light':'dark';root.setAttribute('data-theme',t);btn.textContent=t==='dark'?'☀️':'🌙';});
 })();
 
-load();render();
+load();
+window.addEventListener('pagehide', save);
+window.addEventListener('beforeunload', save);
+render();
 </script>
 </body>
 </html>
