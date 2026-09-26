@@ -155,6 +155,12 @@
     .sticky-inner{max-width:600px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:var(--sp3)}
     .sticky-inner.solo{grid-template-columns:1fr}
 
+    /* Modal (in-page confirm) */
+    .modal-overlay{position:fixed;inset:0;background:rgba(20,18,14,.5);display:grid;place-items:center;z-index:300;padding:var(--sp4)}
+    .modal{background:var(--surface);border:1px solid color-mix(in srgb,var(--text) 10%,transparent);border-radius:var(--r-xl);box-shadow:var(--sh-md);padding:var(--sp5);max-width:380px;width:100%;display:grid;gap:var(--sp4)}
+    .confirm-title{font-weight:700;font-size:var(--text-base)}
+    .confirm-actions{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp3)}
+
     .hidden{display:none!important}
     @media(min-width:520px){body{padding:var(--sp6) var(--sp6) 110px}.panel-inner{padding:var(--sp5) var(--sp6)}}
     @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
@@ -248,6 +254,16 @@
   </main>
 </div>
 
+<div class="modal-overlay hidden" id="confirmOverlay">
+  <div class="modal" role="alertdialog" aria-modal="true" aria-labelledby="confirmTitle">
+    <div class="confirm-title" id="confirmTitle"></div>
+    <div class="confirm-actions">
+      <button class="btn btn-ghost" id="confirmCancel">Cancel</button>
+      <button class="btn btn-danger" id="confirmOk">Confirm</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast">Copied to clipboard!</div>
 
 <div class="sticky-cta">
@@ -269,7 +285,8 @@ function snapshotState(){
       remaining: p.remaining ?? ''
     })),
     ended: !!state.ended,
-    nextId: Number(state.nextId) || (state.players.length + 1)
+    nextId: Number(state.nextId) || (state.players.length + 1),
+    settlement: state._settlement || null
   };
 }
 function save(){
@@ -292,6 +309,8 @@ function load(){
       }));
       state.ended = !!d.ended;
       state.nextId = Number(d.nextId) || (state.players.reduce((m,p)=>Math.max(m,p.id),0) + 1);
+      const s = d.settlement;
+      state._settlement = (s && Array.isArray(s.results) && Array.isArray(s.transfers)) ? s : null;
     }
   }catch(e){}
 }
@@ -302,6 +321,8 @@ function pulse(){const el=document.getElementById('saveDot');el.classList.add('o
 const $=id=>document.getElementById(id);
 const money=v=>'$'+Number(v).toFixed(2).replace('.00','');
 const totalIn=p=>10+p.rebuys*10;
+/* Escape user-supplied names before interpolating into HTML (prevents HTML/script injection) */
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
 /* ── Toast ── */
 let _tt;
@@ -318,7 +339,17 @@ function setRebuy(id,delta){
   const p=state.players.find(p=>p.id===id);if(!p)return;
   p.rebuys=Math.max(0,p.rebuys+delta);save();render();
 }
-function setRemaining(id,v){const p=state.players.find(p=>p.id===id);if(!p)return;p.remaining=v;save();updateRemSummary();}
+function setRemaining(id,v,inputEl){
+  const p=state.players.find(p=>p.id===id);if(!p)return;
+  let val=v;
+  if(val!==''&&val!==null){ /* clamp impossible negatives; sanitize non-numeric */
+    const n=Number(val);
+    val=isNaN(n)?'':String(Math.max(0,n));
+  }
+  p.remaining=val;
+  if(inputEl&&inputEl.value!==val)inputEl.value=val;
+  save();updateRemSummary();
+}
 
 /* ── Scoreboard ── */
 function renderScoreboard(){
@@ -327,7 +358,7 @@ function renderScoreboard(){
   const sorted=[...state.players].sort((a,b)=>sortAsc?totalIn(a)-totalIn(b):totalIn(b)-totalIn(a));
   el.innerHTML=sorted.map(p=>`
     <div class="score-row">
-      <span class="score-name">${p.name}</span>
+      <span class="score-name">${esc(p.name)}</span>
       <div class="score-chips">
         <span class="chip chip-base">$10</span>
         ${p.rebuys>0?`<span class="chip chip-rebuy">${p.rebuys}&times;&nbsp;rebuy</span>`:''}
@@ -354,18 +385,18 @@ function renderPlayers(){
     c.innerHTML=`
       <div class="pc-top">
         <div class="pc-name-wrap">
-          <span class="pc-name">${p.name}</span>
+          <span class="pc-name">${esc(p.name)}</span>
           ${state.ended?'<span class="lock-badge">&#128274; locked</span>':''}
         </div>
         <div style="display:flex;align-items:center;gap:var(--sp2)">
           <span class="pc-total">${money(totalIn(p))} in</span>
-          ${!state.ended?`<button class="rm-btn" aria-label="Remove ${p.name}">Remove</button>`:''}
+          ${!state.ended?`<button class="rm-btn" aria-label="Remove ${esc(p.name)}">Remove</button>`:''}
         </div>
       </div>
       <div class="rebuy-row">
-        <button class="rb-btn rb-minus" aria-label="Remove rebuy for ${p.name}" ${state.ended?'disabled':''}>&#8722;</button>
+        <button class="rb-btn rb-minus" aria-label="Remove rebuy for ${esc(p.name)}" ${state.ended?'disabled':''}>&#8722;</button>
         <div class="rb-center"><span class="rb-num">${p.rebuys}</span><span class="rb-lbl">Rebuys</span></div>
-        <button class="rb-btn rb-plus" aria-label="Add rebuy for ${p.name}" ${state.ended?'disabled':''}>+</button>
+        <button class="rb-btn rb-plus" aria-label="Add rebuy for ${esc(p.name)}" ${state.ended?'disabled':''}>+</button>
       </div>`;
     if(!state.ended) c.querySelector('.rm-btn').addEventListener('click',()=>removePlayer(p.id));
     c.querySelector('.rb-minus').addEventListener('click',()=>setRebuy(p.id,-1));
@@ -379,9 +410,9 @@ function renderRemaining(){
   const el=$('remList');el.innerHTML='';
   state.players.forEach(p=>{
     const d=document.createElement('div');d.className='rem-item';
-    d.innerHTML=`<label for="rem-${p.id}">${p.name}<span class="rem-sublabel">${money(totalIn(p))} in</span></label>
-      <input id="rem-${p.id}" type="number" inputmode="decimal" min="0" step="10" placeholder="0 (blank = lost all)" value="${p.remaining}">`;
-    d.querySelector('input').addEventListener('input',e=>setRemaining(p.id,e.target.value));
+    d.innerHTML=`<label for="rem-${p.id}">${esc(p.name)}<span class="rem-sublabel">${money(totalIn(p))} in</span></label>
+      <input id="rem-${p.id}" type="number" inputmode="decimal" min="0" step="10" placeholder="0 (blank = lost all)" value="${esc(p.remaining)}">`;
+    d.querySelector('input').addEventListener('input',e=>setRemaining(p.id,e.target.value,e.target));
     el.appendChild(d);
   });
   updateRemSummary();
@@ -421,15 +452,30 @@ function endGame(){
   $('remainingPanel').scrollIntoView({behavior:'smooth',block:'start'});
 }
 function resumeGame(){
-  state.ended=false;$('settlementPanel').classList.add('hidden');save();render();
+  state.ended=false;state._settlement=null;$('settlementPanel').classList.add('hidden');
+  msg('Game resumed. Rebuys are unlocked again.');save();render();
 }
 
 /* ── Settle ── */
+function renderSettlement(results,transfers){
+  $('standingsList').innerHTML=results.map(p=>{
+    const cls=p.net>0?'pos':p.net<0?'neg':'zero';
+    const txt=p.net>0?`+${money(p.net)}`:p.net<0?`\u2212${money(Math.abs(p.net))}`:'even';
+    return `<div class="standing-row"><span class="standing-name">${esc(p.name)}</span><span class="standing-val ${cls}">${txt}</span></div>`;
+  }).join('');
+
+  $('transfersList').innerHTML=!transfers.length
+    ?`<div class="transfer-row">&#127881; Nobody owes anyone \u2014 everyone broke even!</div>`
+    :transfers.map(t=>`<div class="transfer-row"><strong>${esc(t.from)}</strong> pays <strong>${esc(t.to)}</strong> \u2014 ${money(t.amount)}</div>`).join('');
+
+  $('settlementPanel').classList.remove('hidden');
+}
+
 function settleGame(){
   const results=state.players.map(p=>({
     ...p,
     buyIn:totalIn(p),
-    rem:p.remaining===''||p.remaining===null?0:Number(p.remaining),
+    rem:p.remaining===''||p.remaining===null?0:Math.max(0,Number(p.remaining)||0),
   })).map(p=>({...p,net:Number((p.rem-p.buyIn).toFixed(2))}));
 
   const tRem=Number(results.reduce((s,p)=>s+p.rem,0).toFixed(2));
@@ -451,20 +497,10 @@ function settleGame(){
     if(debtors[i].amt<.01)i++;if(creditors[j].amt<.01)j++;
   }
 
-  state._lastTransfers=transfers;
-  state._lastResults=results;
+  state._settlement={results,transfers};
+  save();
 
-  $('standingsList').innerHTML=results.map(p=>{
-    const cls=p.net>0?'pos':p.net<0?'neg':'zero';
-    const txt=p.net>0?`+${money(p.net)}`:p.net<0?`\u2212${money(Math.abs(p.net))}`:'even';
-    return `<div class="standing-row"><span class="standing-name">${p.name}</span><span class="standing-val ${cls}">${txt}</span></div>`;
-  }).join('');
-
-  $('transfersList').innerHTML=!transfers.length
-    ?`<div class="transfer-row">&#127881; Nobody owes anyone \u2014 everyone broke even!</div>`
-    :transfers.map(t=>`<div class="transfer-row"><strong>${t.from}</strong> pays <strong>${t.to}</strong> \u2014 ${money(t.amount)}</div>`).join('');
-
-  $('settlementPanel').classList.remove('hidden');
+  renderSettlement(results,transfers);
   msg('Settlement ready. \u2713','ok');
   $('settlementPanel').scrollIntoView({behavior:'smooth',block:'start'});
 }
@@ -472,8 +508,8 @@ function settleGame(){
 /* ── Share ── */
 function buildShareText(){
   const date=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-  const results=state._lastResults||[];
-  const transfers=state._lastTransfers||[];
+  const results=((state._settlement&&state._settlement.results)||[]);
+  const transfers=((state._settlement&&state._settlement.transfers)||[]);
   let lines=[`\uD83C\uDCCF Poker Night \u2014 ${date}`,``,'Standings:'];
   results.forEach(p=>{
     const txt=p.net>0?`+${money(p.net)}`:p.net<0?`-${money(Math.abs(p.net))}`:'even';
@@ -500,14 +536,57 @@ $('shareBtn').addEventListener('click',async()=>{
 $('sortBtn').addEventListener('click',()=>{sortAsc=!sortAsc;renderScoreboard();});
 
 /* ── Msg ── */
-function msg(text,type=''){const el=$('msgBox');el.textContent=text;el.className='msg'+(type?' '+type:'');}
+let msgIsDefault=true; /* true while msgBox shows the empty-state hint (or nothing relevant) */
+function msg(text,type=''){
+  const el=$('msgBox');el.textContent=text;el.className='msg'+(type?' '+type:'');
+  el.classList.remove('hidden');msgIsDefault=false;
+}
+
+/* ── In-page confirm dialog (replaces native confirm()) ── */
+function confirmDialog(message,okLabel='Confirm'){
+  return new Promise(resolve=>{
+    const ov=$('confirmOverlay');
+    $('confirmTitle').textContent=message;
+    $('confirmOk').textContent=okLabel;
+    ov.classList.remove('hidden');
+    const done=v=>{
+      ov.classList.add('hidden');
+      $('confirmOk').removeEventListener('click',onOk);
+      $('confirmCancel').removeEventListener('click',onCancel);
+      ov.removeEventListener('click',onOverlay);
+      document.removeEventListener('keydown',onKey);
+      resolve(v);
+    };
+    const onOk=()=>done(true),onCancel=()=>done(false);
+    const onOverlay=e=>{if(e.target===ov)done(false);};
+    const onKey=e=>{if(e.key==='Escape')done(false);};
+    $('confirmOk').addEventListener('click',onOk);
+    $('confirmCancel').addEventListener('click',onCancel);
+    ov.addEventListener('click',onOverlay);
+    document.addEventListener('keydown',onKey);
+    $('confirmOk').focus();
+  });
+}
 
 /* ── Main render ── */
 function render(){
   renderScoreboard();renderStats();renderPlayers();renderCta();
   $('remainingPanel').classList.toggle('hidden',!state.ended);
   if(state.ended)renderRemaining();
-  if(!state.ended)$('settlementPanel').classList.add('hidden');
+  if(state.ended&&state._settlement){
+    renderSettlement(state._settlement.results,state._settlement.transfers);
+    $('settlementPanel').classList.remove('hidden');
+  }else{
+    $('settlementPanel').classList.add('hidden');
+  }
+  /* Empty-state hint only belongs in the DOM when the table is empty */
+  const mb=$('msgBox');
+  if(!state.players.length){
+    mb.textContent='Add players to get started.';mb.className='msg';msgIsDefault=true;
+    mb.classList.remove('hidden');
+  }else if(msgIsDefault){
+    mb.classList.add('hidden');
+  }
   save();
 }
 
@@ -519,20 +598,20 @@ $('addForm').addEventListener('submit',e=>{
   if(state.players.some(p=>p.name.toLowerCase()===name.toLowerCase())){msg('Player names must be unique.','err');return;}
   addPlayer(name);$('nameInput').value='';$('nameInput').focus();msg(`${name} added.`);
 });
-$('sampleBtn').addEventListener('click',()=>{
-  if(state.players.length&&!confirm('Replace current players with a sample table?'))return;
+$('sampleBtn').addEventListener('click',async()=>{
+  if(state.players.length&&!await confirmDialog('Replace current players with a sample table?','Load sample'))return;
   state.players=[
     {id:state.nextId++,name:'Alex',  rebuys:1,remaining:''},
     {id:state.nextId++,name:'Chris', rebuys:0,remaining:''},
     {id:state.nextId++,name:'Jordan',rebuys:2,remaining:''},
     {id:state.nextId++,name:'Taylor',rebuys:0,remaining:''},
   ];
-  state.ended=false;$('settlementPanel').classList.add('hidden');
+  state.ended=false;state._settlement=null;$('settlementPanel').classList.add('hidden');
   msg('Sample table loaded.');save();render();
 });
-$('resetBtn').addEventListener('click',()=>{
-  if(!confirm('Reset everything and start a new game?'))return;
-  state.players=[];state.ended=false;state.nextId=1;
+$('resetBtn').addEventListener('click',async()=>{
+  if(!await confirmDialog('Reset everything and start a new game?','Reset game'))return;
+  state.players=[];state.ended=false;state.nextId=1;state._settlement=null;
   $('settlementPanel').classList.add('hidden');msg('Game reset.');save();render();
 });
 
